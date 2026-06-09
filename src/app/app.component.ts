@@ -2,9 +2,7 @@ import {
   Component,
   ViewChild,
   ElementRef,
-  AfterViewInit,
-  NgZone,
-  ChangeDetectionStrategy,
+  AfterViewInit, NgZone
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Client } from 'appwrite';
@@ -23,7 +21,6 @@ interface Log {
   templateUrl: './app.component.html',
   standalone: true,
   styleUrls: ['./app.component.css'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, DatePipe],
 })
 export class AppComponent implements AfterViewInit {
@@ -49,14 +46,14 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.resizeObserver = new ResizeObserver((entries) => {
+    this.resizeObserver = new ResizeObserver(entries => {
       this.zone.run(() => {
         for (let entry of entries) {
           if (entry.target === this.detailsRef?.nativeElement) {
             this.detailHeight = entry.contentRect.height;
           }
         }
-      });
+      })
     });
     this.resizeObserver.observe(this.detailsRef.nativeElement);
   }
