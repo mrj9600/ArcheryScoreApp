@@ -3,7 +3,7 @@ export const environment: {
   appwriteProjectId: string;
   appwriteProjectName: string;
 } = {
-  appwriteEndpoint: '[appwriteEndpoint]',
-  appwriteProjectId: '[appwriteProjectId]',
-  appwriteProjectName: '[appwriteProjectName]',
+  appwriteEndpoint: 'https://fra.cloud.appwrite.io/v1',
+  appwriteProjectId: '69c4e80c002ca022ec60',
+  appwriteProjectName: 'ArcheryScore'
 };
