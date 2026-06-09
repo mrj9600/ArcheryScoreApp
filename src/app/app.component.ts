@@ -3,8 +3,8 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  NgZone,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Client } from 'appwrite';
@@ -23,7 +23,7 @@ interface Log {
   templateUrl: './app.component.html',
   standalone: true,
   styleUrls: ['./app.component.css'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, DatePipe],
 })
 export class AppComponent implements AfterViewInit {
@@ -42,7 +42,7 @@ export class AppComponent implements AfterViewInit {
 
   private client: Client;
 
-  constructor(private zone: NgZone) {
+  constructor(private cdr: ChangeDetectorRef) {
     this.client = new Client()
       .setEndpoint(environment.appwriteEndpoint)
       .setProject(environment.appwriteProjectId);
@@ -50,13 +50,11 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.resizeObserver = new ResizeObserver((entries) => {
-      this.zone.run(() => {
-        for (let entry of entries) {
-          if (entry.target === this.detailsRef?.nativeElement) {
-            this.detailHeight = entry.contentRect.height;
-          }
+      for (let entry of entries) {
+        if (entry.target === this.detailsRef?.nativeElement) {
+          this.detailHeight = entry.contentRect.height;
         }
-      });
+      }
     });
     this.resizeObserver.observe(this.detailsRef.nativeElement);
   }
@@ -68,6 +66,7 @@ export class AppComponent implements AfterViewInit {
   async sendPing() {
     if (this.status === 'loading') return;
     this.status = 'loading';
+    this.cdr.markForCheck();
 
     try {
       const result = await this.client.ping();
@@ -92,5 +91,6 @@ export class AppComponent implements AfterViewInit {
       this.status = 'error';
     }
     this.showLogs = true;
+    this.cdr.markForCheck();
   }
 }
